@@ -1,0 +1,2 @@
+# ozellerhaber
+Emlak haberleri
