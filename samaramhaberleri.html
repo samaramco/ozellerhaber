@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMARAM Emlak Haberleri </title>
+    <style>
+        .news-item {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .news-item h3 {
+            margin: 0 0 5px;
+        }
+
+        .news-item .meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .news-item .source {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="news-container">Loading news...</div>
+
+    <script>
+        const newsFeeds = [
+            {
+                name: 'Emlak Kulisi',
+                url: 'https://www.emlakkulisi.com/rss',
+                category: 'real-estate'
+            },
+            {
+                name: 'Hürriyet Emlak',
+                url: 'https://www.hurriyetemlak.com/emlak-haberleri/rss',
+                category: 'real-estate'
+            },
+            {
+                name: 'Dünya Gazetesi Ekonomi',
+                url: 'https://www.dunya.com/rss/ekonomi',
+                category: 'economy'
+            },
+            {
+                name: 'Gayrimenkul Haber',
+                url: 'https://www.gayrimenkulhaber.com/rss/ekonomi',
+                category: 'real-estate'
+            }
+
+
+        ];
+
+        async function fetchNews() {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = ''; // Clear previous news
+
+            for (const feed of newsFeeds) {
+                try {
+                    const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
+                    const data = await response.json();
+
+                    data.items.forEach(item => {
+                        const articleElement = document.createElement('div');
+                        articleElement.classList.add('news-item');
+                        articleElement.innerHTML = `
+                            <h3><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a></h3>
+                            <div class="meta">
+                                <span class="source">${feed.name}</span>
+                                <span class="date">${new Date(item.pubDate).toLocaleDateString('tr-TR')}</span>
+                            </div>
+                            <p>${item.description}</p>
+                        `;
+                        newsContainer.appendChild(articleElement);
+                    });
+                } catch (error) {
+                    console.error(`Error fetching news from ${feed.name}:`, error);
+                }
+            }
+        }
+
+        fetchNews();
+    </script>
+</body>
+</html>
