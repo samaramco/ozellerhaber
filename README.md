@@ -1,2 +1,2 @@
-# ozellerhaber
+# ÖZELLER Emlak haberleri
 Emlak haberleri
